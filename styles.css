@@ -75,13 +75,13 @@ body {
     inset: 0;
     overflow: auto;
     display: flex;
+    flex-direction: row; /* Ensure horizontal layout */
     contain: strict;
 }
 
 /* Gutter (line numbers) */
 .gutter {
     position: sticky;
-    /* stays fixed while content scrolls horizontally */
     left: 0;
     flex: 0 0 var(--gutter-width);
     width: var(--gutter-width);
@@ -89,6 +89,9 @@ body {
     background: #1f2335;
     color: var(--muted);
     z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end; /* Align numbers to right */
 }
 
 .gutter-phantom {
@@ -110,6 +113,8 @@ body {
     min-width: 0;
     background: var(--panel);
     color: var(--text);
+    display: flex;
+    flex-direction: column;
 }
 
 .content-phantom {
@@ -132,15 +137,18 @@ body {
     padding-inline: var(--line-padding-x);
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: 0; /* Remove gap for tighter alignment */
     box-sizing: border-box;
+    font-variant-ligatures: none;
+    -webkit-font-smoothing: antialiased;
 }
 
 .gutter .line {
     text-align: right;
-    padding-inline: 8px 10px;
+    padding-inline: 0 12px;
     color: var(--muted);
     user-select: none;
+    justify-content: flex-end;
 }
 
 /* Active line background (we'll toggle .active on the line) */
