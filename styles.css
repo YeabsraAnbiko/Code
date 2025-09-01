@@ -1,0 +1,159 @@
+:root {
+    /* TokyoNight-inspired palette (don’t change) */
+    --bg: #1a1b26;
+    --panel: #24283b;
+    --text: #c0caf5;
+    --muted: #565f89;
+    --border: rgba(255, 255, 255, 0.08);
+
+    /* Layout + metrics */
+    --radius: 10px;
+    --font: 14px;
+    --line-height-px: 28px;
+    /* fixed pixel height used for virtualization */
+    --line-padding-x: 12px;
+    --gutter-width: 64px;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    padding: 32px;
+    background: var(--bg);
+    color: var(--text);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Courier New", monospace;
+}
+
+.playground {
+    width: min(100%, 920px);
+    margin: 0 auto;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, .45);
+}
+
+.toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    background: #20243a;
+}
+
+.title {
+    font-size: 13px;
+    color: var(--text);
+    opacity: .9;
+}
+
+.status {
+    font-size: 12px;
+    color: var(--muted);
+}
+
+.editor {
+    position: relative;
+    height: 560px;
+    background: var(--panel);
+}
+
+/* Single scroll host (like CM): gutter and content move together */
+.scroll.host {
+    position: absolute;
+    inset: 0;
+    overflow: auto;
+    display: flex;
+    contain: strict;
+}
+
+/* Gutter (line numbers) */
+.gutter {
+    position: sticky;
+    /* stays fixed while content scrolls horizontally */
+    left: 0;
+    flex: 0 0 var(--gutter-width);
+    width: var(--gutter-width);
+    border-right: 1px solid var(--border);
+    background: #1f2335;
+    color: var(--muted);
+    z-index: 2;
+}
+
+.gutter-phantom {
+    /* full height spacer; we size this to total document height */
+    width: 100%;
+}
+
+.gutter-viewport {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+}
+
+/* Content area (code lines) */
+.content {
+    position: relative;
+    flex: 1 1 auto;
+    min-width: 0;
+    background: var(--panel);
+    color: var(--text);
+}
+
+.content-phantom {
+    /* Sets total scrollable height via block-size */
+    width: 100%;
+}
+
+.content-viewport {
+    position: absolute;
+    inset-inline: 0;
+    /* top will be set by transform to align slice */
+}
+
+/* Each rendered line (both gutter and content) */
+.line {
+    height: var(--line-height-px);
+    line-height: var(--line-height-px);
+    font-size: var(--font);
+    white-space: pre;
+    padding-inline: var(--line-padding-x);
+    /* No highlight/selection yet; that comes later phases */
+}
+
+.gutter .line {
+    text-align: right;
+    padding-inline: 8px 10px;
+    color: var(--muted);
+    user-select: none;
+}
+
+/* Hidden input: we still show caret to keep editing usable in Phase 1 */
+.hidden-input {
+    position: absolute;
+    inset: 0;
+    background: transparent;
+    color: transparent;
+    /* hide text */
+    caret-color: var(--text);
+    border: none;
+    outline: none;
+    resize: none;
+    font: inherit;
+    line-height: var(--line-height-px);
+    padding: 0;
+    /* we’ll place it to match scroll position */
+    opacity: 1;
+    /* Let it capture clicks and keyboard, but not visible content */
+}
