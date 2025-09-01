@@ -13,6 +13,7 @@
     /* fixed pixel height used for virtualization */
     --line-padding-x: 12px;
     --gutter-width: 64px;
+    --active-line-bg: rgba(255, 255, 255, 0.03);
 }
 
 * {
@@ -33,7 +34,7 @@ body {
 }
 
 .playground {
-    width: min(100%, 920px);
+    width: min(100%, 980px);
     margin: 0 auto;
     background: var(--panel);
     border: 1px solid var(--border);
@@ -54,7 +55,7 @@ body {
 .title {
     font-size: 13px;
     color: var(--text);
-    opacity: .9;
+    opacity: .95;
 }
 
 .status {
@@ -129,7 +130,10 @@ body {
     font-size: var(--font);
     white-space: pre;
     padding-inline: var(--line-padding-x);
-    /* No highlight/selection yet; that comes later phases */
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    box-sizing: border-box;
 }
 
 .gutter .line {
@@ -139,21 +143,70 @@ body {
     user-select: none;
 }
 
-/* Hidden input: we still show caret to keep editing usable in Phase 1 */
+/* Active line background (we'll toggle .active on the line) */
+.content .line.active {
+    background: var(--active-line-bg);
+    width: 100%;
+}
+
+/* Token colors — keep Tokyonight-inspired palette */
+.token.punctuation {
+    color: #89ddff;
+}
+
+/* punctuation */
+.token.boolean,
+.token.number {
+    color: #bb9af7;
+}
+
+/* numbers/booleans */
+.token.string {
+    color: #9ece6a;
+}
+
+/* strings */
+.token.key {
+    color: #7aa2f7;
+}
+
+/* object keys */
+.token.null {
+    color: #ff7a93;
+}
+
+/* null */
+.token.operator {
+    color: #7dcfff;
+}
+
+/* Hidden input: captures typing & selection. We keep caret visible. */
 .hidden-input {
     position: absolute;
-    inset: 0;
+    top: 0;
+    left: var(--gutter-width);
+    /* ← key fix! */
+    width: calc(100% - var(--gutter-width));
+    height: 100%;
     background: transparent;
     color: transparent;
-    /* hide text */
     caret-color: var(--text);
     border: none;
     outline: none;
     resize: none;
-    font: inherit;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Courier New", monospace;
+    font-size: var(--font);
     line-height: var(--line-height-px);
-    padding: 0;
-    /* we’ll place it to match scroll position */
-    opacity: 1;
-    /* Let it capture clicks and keyboard, but not visible content */
+    padding-left: var(--line-padding-x);
+    padding-right: var(--line-padding-x);
+    z-index: 5;
+    /* above viewport for caret visibility */
+}
+
+/* Small responsive nicety */
+@media (max-width: 520px) {
+    :root {
+        --gutter-width: 48px;
+        --line-padding-x: 8px;
+    }
 }
